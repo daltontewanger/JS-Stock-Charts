@@ -29,7 +29,7 @@ async function main() {
 
   let { AMZN, SONY, DIS, BNTX } = result;
   let stocks = [AMZN, SONY, DIS, BNTX];
-  console.log(result);
+  console.log(mockData);
   console.log(stocks[0].values);
 
   stocks.forEach((stock) => stock.values.reverse());
@@ -60,6 +60,23 @@ async function main() {
       ],
     },
   });
+
+  new Chart(averagePriceChartCanvas.getContext("2d"), {
+    type: "pie",
+    data: {
+      labels: stocks.map((stock) => stock.meta.symbol),
+      //labels: ["Red", "Orange", "Yellow", "Green"],
+      datasets: [
+        {
+          label: "Average",
+          data: stocks.map((stock) => averageValue(stock.values)),
+          //data: [1, 2, 3, 4],
+          backgroundColor: stocks.map((stock) => getColor(stock.meta.symbol)),
+          borderColor: stocks.map((stock) => getColor(stock.meta.symbol)),
+        },
+      ],
+    },
+  });
 }
 
 function highestValue(values) {
@@ -70,6 +87,14 @@ function highestValue(values) {
     }
   });
   return highest;
+}
+
+function averageValue(values) {
+  let average = 0;
+  values.forEach((value) => {
+    average += parseFloat(value.high);
+  });
+  return average / values.length;
 }
 
 main();
